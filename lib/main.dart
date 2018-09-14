@@ -190,7 +190,28 @@ class _FlutterPackageNotifierState extends State<FlutterPackageNotifier> with Si
                                 IconButton(
                                   icon: Icon(Icons.delete_outline),
                                   onPressed: (){
-
+                                    showDialog(
+                                        context: context,
+                                        builder: (_) => AlertDialog(
+                                          title: Text("Unfollow "+"${ref['PackageName']}"+"?"),
+                                          content: Text("Are you sure you want to unfollow this package?"),
+                                          actions: <Widget>[
+                                            FlatButton(
+                                              child: Text("No"),
+                                              onPressed: (){
+                                                Navigator.pop(context);
+                                              },
+                                            ),
+                                            FlatButton(
+                                              child: Text("Yes"),
+                                              onPressed: (){
+                                                Firestore.instance.collection("Users").document(globals.loggedInUser.uid).collection("Packages").document(ref.documentID).delete();
+                                                Navigator.pop(context);
+                                              },
+                                            ),
+                                          ],
+                                        )
+                                    );
                                   },
                                   tooltip: "Remove",
                                 ),
@@ -293,7 +314,6 @@ class _FlutterPackageNotifierState extends State<FlutterPackageNotifier> with Si
                   itemBuilder: (context, suggestion){
                     return ListTile(
                       title: Text(suggestion),
-                      trailing: Icon(Icons.favorite_border),
                     );
                   },
                   onSuggestionSelected: (value) async{
